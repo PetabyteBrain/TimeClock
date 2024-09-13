@@ -9,6 +9,8 @@ try:
         user=input("Enter username: "),
         password=getpass("Enter password: "),
     ) as connection:
-        print(connection)
+        create_db_query = "CREATE DATABASE TimeClockDB"
+        with connection.cursor() as cursor:
+            cursor.execute(create_db_query)
 except Error as e:
     print(e)
