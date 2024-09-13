@@ -1,0 +1,42 @@
+nav ul{
+    list-style-type: none;
+}
+nav a{
+    text-decoration: none;
+    opacity: 1;
+    transition: 0.3s;
+    
+    
+    color: #ffffff;
+    font-size: 35px; 
+    padding: 45px;
+    margin: 45px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    
+}
+nav a:hover{
+    background-color: #ffffff;
+    color: #000;
+    
+}
+body{
+    background-color: #fff;
+}
+header{
+    background-color: #000;
+    
+}
+#Titel{
+    text-align: center;
+    color:rgb(255, 255, 255)
+}
+#login{
+    text-align: right;
+}
+.text-home{
+    text-align: center;
+}
+.titel-home{
+    text-align: center;
+}
