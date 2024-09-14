@@ -1,54 +1,62 @@
-create database IF NOT EXISTS TimeClockDB;
-use TimeClockDB;
+CREATE DATABASE IF NOT EXISTS TimeClockDB;
+USE TimeClockDB;
 
-create table User(
-	id int PRIMARY KEY,
-    FOREIGN KEY (onlineTime_Fid) 
-      REFERENCES OnlineTime (id),
-	FOREIGN KEY (totalTime_Fid) 
-      REFERENCES TotalTime (id),
-    FOREIGN KEY (permission_Fid) 
-      REFERENCES Permission (id),
-    firstName varchar(255),
-    lastName varchar(255),
-    tagNum varchar(255),
-    email varchar(255),
-    password text	/* sha2("your passsword", 512) */
-    );
-    
-create table Permissions(
-	id int PRIMARY KEY,
-    permissionLevel varchar(255),
-    title varchar(255)
-    );
+CREATE TABLE Permissions (
+    id INT PRIMARY KEY,
+    permissionLevel VARCHAR(255),
+    title VARCHAR(255)
+);
 
-create table TotalTime(
-	id int PRIMARY KEY,
-    FOREIGN KEY (user_Fid) 
-      REFERENCES User (id),
-	FOREIGN KEY (onlineTime_Fid) 
-      REFERENCES OnlineTime (id),
-    sumTime varchar(255),
-    daysWorked varchar(255),
-    breakTime varchar(255)
-    );
-    
-create table OnlineTime(
-	id int PRIMARY KEY,
-    FOREIGN KEY (user_Fid) 
-      REFERENCES User (id),
-	FOREIGN KEY (totalTime_Fid) 
-      REFERENCES TotalTime (id),
-    dateTimeStart datetime,
-    dateTimeStop datetime,
-    break int
-    );
+CREATE TABLE OnlineTime (
+    id INT PRIMARY KEY,
+    dateTimeStart DATETIME,
+    dateTimeStop DATETIME,
+    break INT
+);
 
-select * from User;
-select * from Permissions;
-select * from TotalTime;
-select * from OnlineTime;
-show tables;
+CREATE TABLE TotalTime (
+    id INT PRIMARY KEY,
+    sumTime VARCHAR(255),
+    daysWorked VARCHAR(255),
+    breakTime VARCHAR(255)
+);
+
+CREATE TABLE User (
+    id INT PRIMARY KEY,
+    firstName VARCHAR(255),
+    lastName VARCHAR(255),
+    tagNum VARCHAR(255),
+    email VARCHAR(255),
+    password TEXT, /* sha2("your password", 512) */
+    permission_Fid INT,
+    onlineTime_Fid INT,
+    totalTime_Fid INT,
+    FOREIGN KEY (permission_Fid) REFERENCES Permissions(id),
+    FOREIGN KEY (onlineTime_Fid) REFERENCES OnlineTime(id),
+    FOREIGN KEY (totalTime_Fid) REFERENCES TotalTime(id)
+);
+
+ALTER TABLE TotalTime 
+    ADD user_Fid INT,
+    ADD onlineTime_Fid INT,
+    ADD FOREIGN KEY (user_Fid) REFERENCES User(id),
+    ADD FOREIGN KEY (onlineTime_Fid) REFERENCES OnlineTime(id);
+
+ALTER TABLE OnlineTime 
+    ADD user_Fid INT,
+    ADD totalTime_Fid INT,
+    ADD FOREIGN KEY (user_Fid) REFERENCES User(id),
+    ADD FOREIGN KEY (totalTime_Fid) REFERENCES TotalTime(id);
+
+-- Test the schema with select queries
+SELECT * FROM User;
+SELECT * FROM Permissions;
+SELECT * FROM TotalTime;
+SELECT * FROM OnlineTime;
+
+-- Display tables in the database
+SHOW TABLES;
+
 /*
-drop database TimeClockDB;
+DROP DATABASE TimeClockDB;
 */
