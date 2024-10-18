@@ -1,5 +1,8 @@
 import mysql.connector
 from mysql.connector import Error
+from dotenv import load_dotenv
+
+load_dotenv()
 
 config = {
     'user': 'root',
@@ -8,6 +11,9 @@ config = {
     'port': '3305',
     'database': 'TimeClockDB'
 }
+
+def getUsers():
+    print("hello")
 
 try:
     # Unpack config dictionary into the connect method
@@ -32,6 +38,7 @@ try:
 
     else:
         print("Could not connect to the database")
+
 
 except Error as e:
     print(f"Error: {e}")
