@@ -397,3 +397,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 Website/backend/.env
+additionalFiles/backend_plan/.$descriptionRoutingBackend.drawio.bkp

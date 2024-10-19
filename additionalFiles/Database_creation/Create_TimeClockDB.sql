@@ -2,27 +2,27 @@ CREATE DATABASE IF NOT EXISTS TimeClockDB;
 USE TimeClockDB;
 
 CREATE TABLE Permissions (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     permissionLevel VARCHAR(255),
     title VARCHAR(255)
 );
 
 CREATE TABLE OnlineTime (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     dateTimeStart DATETIME,
     dateTimeStop DATETIME,
     break INT
 );
 
 CREATE TABLE TotalTime (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     sumTime VARCHAR(255),
     daysWorked VARCHAR(255),
     breakTime VARCHAR(255)
 );
 
 CREATE TABLE User (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     firstName VARCHAR(255),
     lastName VARCHAR(255),
     tagNum VARCHAR(255),

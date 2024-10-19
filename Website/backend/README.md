@@ -1,7 +1,13 @@
 # Installation for Backend:
 
 1. Python installation:
-    Shell: `pip install mysql-connector-python`
+    prerequisites: 
+        1. [Mysql-Connector](https://pypi.org/project/mysql-connector-python/)
+        2. [Dotenv Python](https://pypi.org/project/python-dotenv/)
 
-2. Javasript Installation:
+    Shell: `pip install mysql-connector-python`
+    Shell: `pip install dotenv`
+
+
+1. Javasript setup:
 
