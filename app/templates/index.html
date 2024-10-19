@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <title>Stempel Uhr</title>
+    <script>
+        async function fetchData() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/data');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                document.getElementById('result').innerText = JSON.stringify(data);
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+        }
+        async function fetchUsers() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/users');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                document.getElementById('result1').innerText = JSON.stringify(data);
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Stempel Uhr</h1>
+    <button onclick="fetchData()">Fetch Data</button>
+    <pre id="result"></pre>
+
+    <button onclick="fetchUsers()">Fetch Users</button>
+    <pre id="result1"></pre>
+</body>
+</html>
