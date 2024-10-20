@@ -65,6 +65,7 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
+        <li><a href="#structure">Structure</a></li>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
@@ -112,13 +113,45 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
+### Structure
+
+``` bash
+app/
+├── static/
+│   ├── images/
+│   │   ├── favicon.ico
+│   │   └── ...
+│   ├── app.js
+│   ├── style.css
+│   └── ...
+├── template/
+│   ├── index.html
+│   └── ...
+├── .env
+└── mysqlConnector.py
+scripts/
+├── app.py
+└── ...
+```
+
+
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+1. Python installation:
+    prerequisites: 
+        1. [Mysql-Connector](https://pypi.org/projectmysql-connector-python/)
+            - Shell: `pip install mysql-connector-python`
+        2. [Dotenv Python](https://pypi.org/project/python-dotenv/)
+            - Shell: `pip install dotenv`
+        3. [Flask Python](https://pypi.org/project/Flask/)
+            - Shell: `pip install flask`
+        4. [Flask-Cors Python](https://pypi.org/project/Flask-Cors/)
+            - Shell: `pip install flask-cors`
+        5. [Flasgger](https://pypi.org/project/flasgger/)
+            - Shell: `pip install flasgger`
+
+
+2. Javasript setup:`
 
 ### Installation
 
