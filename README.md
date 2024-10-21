@@ -94,14 +94,16 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 
 ### Built With
 
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+* [![Python][Python.py]][Python-url]
+* [![Flask][Flask.com]][Flask-url]
+* [![Mysql][Mysql.com]][Mysql-url]
+* [![Html][Html.html]][Html-url]
+* [![Css][Css.css]][Css-url]
+* [![Javascript][Javascript.js]][Javascript-url]
+* [![Swagger][Swagger.io]][Swagger-url]
+* [![Json][Json.org]][Json-url]
+
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -116,42 +118,61 @@ To get a local copy up and running follow these simple example steps.
 ### Structure
 
 ``` bash
-app/
-├── static/
-│   ├── images/
-│   │   ├── favicon.ico
+TimeClock/
+├── app/
+│   ├── static/
+│   │   ├── images/
+│   │   │   ├── favicon.ico
+│   │   │   └── ...
+│   │   ├── app.js
+│   │   └── style.css
+│   ├── templates/
+│   │   ├── index.html
 │   │   └── ...
-│   ├── app.js
-│   ├── style.css
-│   └── ...
-├── template/
-│   ├── index.html
-│   └── ...
+│   ├── tests/
+│   │   ├── __init__.py
+│   │   ├── test_routes.py
+│   │   └── test_services.py
+│   ├── __init__.py
+│   ├── config.py
+│   ├── mysqlConnector.py
+│   ├── routes.py
+│   ├── services.py
+│   └── utils.py
+├── images
+├── scripts
 ├── .env
-└── mysqlConnector.py
-scripts/
-├── app.py
-└── ...
+├── README.md
+├── requirements.txt
+└── run.py
 ```
 
 
 ### Prerequisites
 
-1. Python installation:
-    prerequisites: 
-        1. [Mysql-Connector](https://pypi.org/projectmysql-connector-python/)
-            - Shell: `pip install mysql-connector-python`
-        2. [Dotenv Python](https://pypi.org/project/python-dotenv/)
-            - Shell: `pip install dotenv`
-        3. [Flask Python](https://pypi.org/project/Flask/)
-            - Shell: `pip install flask`
-        4. [Flask-Cors Python](https://pypi.org/project/Flask-Cors/)
-            - Shell: `pip install flask-cors`
-        5. [Flasgger](https://pypi.org/project/flasgger/)
-            - Shell: `pip install flasgger`
+#### 1. Python installation:
+  ##### prerequisites
+  either you can install the Prerequisites manually or there is the possibility of using the Requirements.txt file to automatically install all the needed Libraries
+  ###### 1. Manual install
+  1. [Mysql-Connector](https://pypi.org/projectmysql-connector-python/)
+      - Shell: `pip install mysql-connector-python`
+  2. [Dotenv Python](https://pypi.org/project/python-dotenv/)
+      - Shell: `pip install dotenv`
+  3. [Flask Python](https://pypi.org/project/Flask/)
+      - Shell: `pip install flask`
+  4. [Flask-Cors Python](https://pypi.org/project/Flask-Cors/)
+      - Shell: `pip install flask-cors`
+  5. [Flasgger](https://pypi.org/project/flasgger/)
+      - Shell: `pip install flasgger`
+  
+  ###### 2. Automatic install
+  To install all necessary libraries you can just download the requirements.txt file and run this line of code in the command line.
+  ``` bash 
+  pip install -r requirements.txt
+  ```
 
 
-2. Javasript setup:`
+#### 2. Javasript setup:`
 
 ### Installation
 
@@ -241,7 +262,7 @@ Project Link: [https://github.com/PetabyteBrain/TimeClock](https://github.com/Pe
 
 * []()
 * []()
-* []()
+* [Tree Structure Generator](https://tree.nathanfriend.com/)
 * [Github Readme Template](https://github.com/othneildrew/Best-README-Template)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -263,19 +284,19 @@ Project Link: [https://github.com/PetabyteBrain/TimeClock](https://github.com/Pe
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com 
+[Python.py]: https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue
+[Python-url]: https://python.org/
+[Html.html]: https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white
+[Html-url]: https://www.w3schools.com/html/
+[Css.css]: https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white
+[Css-url]: https://www.w3schools.com/Css/
+[Javascript.js]: https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E
+[Javascript-url]: https://www.w3schools.com/Js/
+[Json.org]: https://img.shields.io/badge/json-5E5C5C?style=for-the-badge&logo=json&logoColor=white
+[Json-url]: https://www.json.org
+[Swagger.io]: https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white
+[Swagger-url]: https://swagger.io/
+[Flask.com]: https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white
+[Flask-url]: https://pypi.org/project/Flask/
+[Mysql.com]: https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white
+[Mysql-url]: https://www.mysql.com

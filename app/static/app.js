@@ -18,6 +18,7 @@ async function fetchData() {
     }
     const response = await fetch(`${apiUrl}/api/data`);
     const data = await response.json();
+    document.getElementById(`result`).innerText = JSON.stringify(data)
     console.log(data);
 }
 /* User Requests */
