@@ -7,49 +7,37 @@ CREATE TABLE Permissions (
     title VARCHAR(255)
 );
 
-CREATE TABLE OnlineTime (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    dateTimeStart DATETIME,
-    dateTimeStop DATETIME,
-    break INT
-);
-
-CREATE TABLE TotalTime (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    sumTime VARCHAR(255),
-    daysWorked VARCHAR(255),
-    breakTime VARCHAR(255)
-);
-
-CREATE TABLE User (
+CREATE TABLE `User` (
     id INT AUTO_INCREMENT PRIMARY KEY,
     firstName VARCHAR(255),
     lastName VARCHAR(255),
     tagNum VARCHAR(255),
     email VARCHAR(255),
     password TEXT, /* sha2("your password", 512) */
-    permission_Fid INT,
-    onlineTime_Fid INT,
-    totalTime_Fid INT,
-    FOREIGN KEY (permission_Fid) REFERENCES Permissions(id),
-    FOREIGN KEY (onlineTime_Fid) REFERENCES OnlineTime(id),
-    FOREIGN KEY (totalTime_Fid) REFERENCES TotalTime(id)
+    permission_id INT,
+    FOREIGN KEY (permission_id) REFERENCES Permissions(id)
 );
 
-ALTER TABLE TotalTime 
-    ADD user_Fid INT,
-    ADD onlineTime_Fid INT,
-    ADD FOREIGN KEY (user_Fid) REFERENCES User(id),
-    ADD FOREIGN KEY (onlineTime_Fid) REFERENCES OnlineTime(id);
+CREATE TABLE OnlineTime (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    dateTimeStart DATETIME,
+    dateTimeStop DATETIME,
+    breakTime INT,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES `User`(id)
+);
 
-ALTER TABLE OnlineTime 
-    ADD user_Fid INT,
-    ADD totalTime_Fid INT,
-    ADD FOREIGN KEY (user_Fid) REFERENCES User(id),
-    ADD FOREIGN KEY (totalTime_Fid) REFERENCES TotalTime(id);
+CREATE TABLE TotalTime (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sumTime TIME,
+    daysWorked INT,
+    breakTime TIME,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES `User`(id)
+);
 
 -- Test the schema with select queries
-SELECT * FROM User;
+SELECT * FROM `User`;
 SELECT * FROM Permissions;
 SELECT * FROM TotalTime;
 SELECT * FROM OnlineTime;
@@ -57,6 +45,6 @@ SELECT * FROM OnlineTime;
 -- Display tables in the database
 SHOW TABLES;
 
-/*
-DROP DATABASE TimeClockDB;
-*/
+
+-- DROP DATABASE TimeClockDB;
+

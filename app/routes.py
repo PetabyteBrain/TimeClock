@@ -207,6 +207,9 @@ def init_routes(app):
                 email:
                   type: string
                   example: "example@example.com"
+                permissionLevel:
+                  type: string
+                  example: "User"
           400:
             description: Invalid input
           500:
@@ -354,24 +357,24 @@ def init_routes(app):
               items:
                 type: object
                 properties:
-                  break:
-                    type: integer
-                    example: 1
                   firstName:
                     type: string
-                    example: "James"
+                    example: "John"
                   lastName:
                     type: string
-                    example: "Bond"
-                  tagNum:
-                    type: string
-                    example: "5498754759"
+                    example: "Doe"
                   dateTimeStart:
                     type: string
-                    example: "Start-Time"
+                    example: "Fri, 01 Nov 2024 08:00:00 GMT"
                   dateTimeStop:
                     type: string
-                    example: "End-Time"
+                    example: "Fri, 01 Nov 2024 17:00:00 GMT"
+                  breakTime:
+                    type: string
+                    example: "60"
+                  id:
+                    type: int
+                    example: "1"
           400:
             description: Invalid status value
           401:
@@ -400,21 +403,21 @@ def init_routes(app):
             schema:
               type: object
               properties:
-                id:
-                  type: integer
-                  example: 1
                 firstName:
                   type: string
-                  example: "James"
+                  example: "John"
                 lastName:
                   type: string
-                  example: "Bond"
-                email:
+                  example: "Doe"
+                dateTimeStart:
                   type: string
-                  example: "example@example.com"
-                tagNum:
+                  example: "Fri, 01 Nov 2024 08:00:00 GMT"
+                dateTimeStop:
                   type: string
-                  example: "5498754759"
+                  example: "Fri, 01 Nov 2024 17:00:00 GMT"
+                breakTime:
+                  type: string
+                  example: "60"
           400:
             description: Invalid status value
           401:
@@ -424,35 +427,19 @@ def init_routes(app):
         """
         return get_onlinetime_by_id(user_id)
     
-    @app.route('/onlinetime/start', methods=['POST'])
-    def create_onlinetime_route():
+    @app.route('/onlinetime/start/<int:user_id>', methods=['POST'])
+    def create_onlinetime_route(user_id):
         """
         Start a new Session
         ---
         tags:
           - Onlinetime
         parameters:
-          - name: body
-            in: body
+          - name: user_id
+            in: path
             required: true
-            schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                  example: "James"
-                lastName:
-                  type: string
-                  example: "Bond"
-                tagNum:
-                  type: string
-                  example: "5498754759"
-                email:
-                  type: string
-                  example: "example@example.com"
-                password:
-                  type: string
-                  example: "password123"
+            type: integer
+            description: The ID of the user
         responses:
           200:
             description: User created successfully
@@ -479,12 +466,53 @@ def init_routes(app):
           500:
             description: Database connection failed
         """
-        return create_onlinetime()
+        return create_onlinetime(user_id)
     
-    @app.route('/onlinetime/pause/<int:user_id>', methods=['PUT'])
-    def edit_onlinetime_route(user_id):
+    @app.route('/onlinetime/stop/<int:user_id>', methods=['POST'])
+    def stop_onlinetime_route(user_id):
         """
-        Edit an existing user
+        Stop an existing Session
+        ---
+        tags:
+          - Onlinetime
+        parameters:
+          - name: user_id
+            in: path
+            required: true
+            type: integer
+            description: The ID of the user
+        responses:
+          200:
+            description: User created successfully
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                firstName:
+                  type: string
+                  example: "James"
+                lastName:
+                  type: string
+                  example: "Bond"
+                tagNum:
+                  type: string
+                  example: "5498754759"
+                email:
+                  type: string
+                  example: "example@example.com"
+          400:
+            description: Invalid input
+          500:
+            description: Database connection failed
+        """
+        return stop_onlinetime(user_id)
+    
+    @app.route('/onlinetime/edit/<int:user_id>/<string:session_time_identifier>', methods=['PUT'])
+    def edit_onlinetime_route(user_id, session_time_identifier):
+        """
+        Edit a previous Session
         ---
         tags:
           - Onlinetime
@@ -494,33 +522,81 @@ def init_routes(app):
             required: true
             type: integer
             description: The ID of the user to edit
+          - name: session_time_identifier
+            in: path
+            required: true
+            type: string
+            description: the End time of the Session
           - name: body
             in: body
             required: true
             schema:
               type: object
               properties:
-                firstName:
+                dateTimeStart:
                   type: string
-                  example: "James"
-                lastName:
+                  example: "2024-11-01 08:00:00"
+                dateTimeStop:
                   type: string
-                  example: "Bond"
-                email:
-                  type: string
-                  example: "example@example.com"
+                  example: "2024-11-01 17:00:00"
         responses:
           200:
-            description: User updated successfully
+            description: Session updated successfully
           400:
             description: Invalid input
           404:
-            description: User not found
+            description: Session not found
           500:
             description: Database connection failed
         """
         data = request.get_json()
-        return update_onlinetime(user_id, data)
+        return update_onlinetime(user_id, session_time_identifier, data)
+      
+    @app.route('/onlinetime/<int:user_id>/<string:session_time_identifier>', methods=['DELETE'])
+    def delete_onlineTime_byid(user_id, session_time_identifier):
+        """
+        Delete onlinetime by User_ID & End time of session
+        ---
+        tags:
+          - Onlinetime
+        parameters:
+          - name: user_id
+            in: path
+            required: true
+            type: integer
+            description: The ID of the user to delete
+          - name: session_time_identifier
+            in: path
+            required: true
+            type: string
+            description: the End time of the Session
+        responses:
+          200:
+            description: User deleted successfully
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "User with id 1 deleted successfully"
+          404:
+            description: User not found
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "User not found"
+          500:
+            description: Database connection failed
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Database connection failed"
+        """
+        return delete_onlineTime_by_id(user_id, session_time_identifier)
   
   # Routing for /totaltime
     @app.route('/totaltime', methods=['GET'])
@@ -538,7 +614,7 @@ def init_routes(app):
               items:
                 type: object
                 properties:
-                  break:
+                  id:
                     type: integer
                     example: 1
                   firstName:
@@ -547,21 +623,23 @@ def init_routes(app):
                   lastName:
                     type: string
                     example: "Bond"
-                  tagNum:
+                  sumTime:
                     type: string
-                    example: "5498754759"
-                  dateTimeStart:
+                    example: "40:00:00"
+                  daysWorked:
+                    type: integer
+                    example: 5
+                  breakTime:
                     type: string
-                    example: "Start-Time"
-                  dateTimeStop:
-                    type: string
-                    example: "End-Time"
+                    example: "2:30:00"
           400:
             description: Invalid status value
           401:
             description: Unauthorized request
           404:
             description: Not found
+          500:
+            description: Internal server error
         """
         return get_all_totaltime()
     

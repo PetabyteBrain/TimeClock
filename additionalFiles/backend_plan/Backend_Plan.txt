@@ -1,0 +1,42 @@
+#Backend Plan
+
+##Descriptions
+  GET / POST / PUT / DELETE = Method type
+  (... ) = Method explanation
+  {... } = Permission needed to use Method
+  /... / = Login Verification (Checks that that it is the correct user)
+
+##Permissions
+  1. User
+  2. Supervisor
+  3. Admin
+  4. Dev (maybe)
+  5. ...
+
+##Tables:
+
+  ###TotalTime:
+  ├─ GET Totaltime (Get all totaltime) /{Admin}/
+  ├─ GET Totaltime byId (Get totaltime by user Id) /{user}/
+  	
+  ###User:
+  ├─ GET Users (Get all users) /{Admin}/
+  ├─ GET Users byId (Get users by user Id) /{user}/
+  ├─ GET Users byName (Get users by user Name) /{admin}/
+  ├─ POST Users (Creates new user) {no permission}
+  ├─ Put Users byId (Edit user profile by user Id) /{user}/
+  ├─ DELETE Users byId (Delete users by user Id) /{user}/
+
+  ###Permissions:
+  ├─ GET Permissions (Get all permissions) {admin}
+  
+  ###OnlineTime
+  ├─ GET Onlinetime (Get all onlinetime) {admin}
+  ├─ GET Onlinetime byId (Get onlinetime by user Id) {user}
+  ├─ POST Onlinetime byId (Create new onlinetime entry for user) {user}
+  ├─ PATCH Onlinetime byId (Edit onlinetime entry of user to add break) {user}
+  ├─ PATCH Onlinetime byId (Edit onlinetime entry of user to add end time) {user}
+  ├─ DELETE Onlinetime byId (Get onlinetime by user Id) {admin}
+
+
+
