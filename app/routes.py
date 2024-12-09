@@ -14,25 +14,149 @@ Functions:
 """
 from flask import jsonify, request, render_template, abort, send_from_directory
 import os
-from .services import *
+from .services import * #Temoporary 
+from .authentication import * #Temoporary
+from . import csrf
+
+
 
 def init_routes(app):
+    @csrf.exempt
     @app.route('/')
     def index():
-        return render_template('index.html')
-
+        return render_template('home.html')
+    
+    @csrf.exempt
     @app.route('/api/ip', methods=['GET'])
     def get_ip():
         ip_address = request.remote_addr
         return jsonify({'ip_address': ip_address})
 
+    @csrf.exempt
     @app.route('/favicon.ico')
     def favicon():
-        return send_from_directory(os.path.join(app.root_path, 'static/images'), 'favicon.ico')
+        return send_from_directory(
+            os.path.join(app.root_path, 'static', 'images'),
+            'favicon.ico',
+            mimetype='image/vnd.microsoft.icon'
+        )
 
+    # Routing for Authentication ------------------------------------------------------------------
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        """
+        User Login
+        ---
+        tags:
+          - Authentication
+        parameters:
+          - name: email
+            in: formData
+            type: string
+            required: True
+            description: User email address
+          - name: password
+            in: formData
+            type: string
+            required: True
+            description: User password
+        responses:
+          200:
+            description: Login successful
+          401:
+            description: Invalid credentials
+        """
+        return auth_login()
 
-    # Routing for /user
+    @app.route('/register', methods=['GET', 'POST'])
+    def register():
+        """
+        User Registration
+        ---
+        tags:
+          - Authentication
+        responses:
+          201:
+            description: Registration successful
+          400:
+            description: Invalid registration data
+        """
+        return auth_register()
+
+    
+    @app.route('/dashboard')
+    @login_required
+    def dashboard():
+        """
+        User Dashboard
+        ---
+        tags:
+          - Dashboard
+        responses:
+          200:
+            description: Dashboard loaded successfully
+          401:
+            description: Unauthorized access
+        """
+        return render_template('dashboard.html', user=current_user)
+    
+    @app.route('/admin')
+    @login_required
+    @role_required('admin')
+    def admin_dashboard():
+        """
+        Admin Dashboard
+        ---
+        tags:
+          - Dashboard
+        responses:
+          200:
+            description: Admin dashboard loaded successfully
+          403:
+            description: Access forbidden - Admin role required
+        """
+        return auth_admin_dashboard()
+    
+    @csrf.exempt
+    @app.route('/logout', methods=['POST'])
+    @login_required
+    def logout():
+        """
+        User Logout
+        ---
+        tags:
+          - Authentication
+        responses:
+          200:
+            description: Logout successful
+          401:
+            description: Unauthorized - User not logged in
+        """
+        return auth_logout()
+    
+    # Error handler for unauthorized access
+    @app.errorhandler(403)
+    def forbidden(e):
+        """
+        Access Forbidden Error
+        ---
+        tags:
+          - Errors
+        responses:
+          403:
+            description: Access forbidden - User lacks required permissions
+        """
+        return 'Access forbidden: You do not have the necessary permissions.', 403
+
+    # Inject current_user into templates
+    @app.context_processor
+    def inject_user():
+        return {'current_user': current_user}
+
+    # Routing for /user -----------------------------------------------------------------------------
     @app.route('/users', methods=['GET'])
+    @login_required
+    @role_required('admin')
     def get_users():
         """
         Get all Users
@@ -72,6 +196,7 @@ def init_routes(app):
         return get_all_users()
 
     @app.route('/users/<int:user_id>', methods=['GET'])
+    @login_required
     def get_user_byid(user_id):
         """
         Get user by ID
@@ -115,6 +240,8 @@ def init_routes(app):
         return get_user_by_id(user_id)
 
     @app.route('/users/<string:user_name>', methods=['GET'])
+    @login_required
+    @role_required('admin')
     def get_user_byName(user_name):
         """
         Get user by name
@@ -158,6 +285,8 @@ def init_routes(app):
         return get_user_by_name(user_name)
 
     @app.route('/users', methods=['POST'])
+    @login_required
+    @role_required('admin')
     def create_user_route():
         """
         Create a new user
@@ -218,6 +347,7 @@ def init_routes(app):
         return create_user()
 
     @app.route('/users/<int:user_id>', methods=['PUT'])
+    @login_required
     def edit_user_route(user_id):
         """
         Edit an existing user
@@ -259,6 +389,8 @@ def init_routes(app):
         return update_user(user_id, data)
     
     @app.route('/users/<int:user_id>', methods=['DELETE'])
+    @login_required
+    @role_required('admin')
     def delete_user_byid(user_id):
         """
         Delete user by ID
@@ -343,6 +475,8 @@ def init_routes(app):
 
     # Routing for /onlinetime
     @app.route('/onlinetime', methods=['GET'])
+    @login_required
+    @role_required('admin')
     def get_onlinetime():
         """
         Get all onlinetime
@@ -385,6 +519,7 @@ def init_routes(app):
         return get_all_onlinetime()
     
     @app.route('/onlinetime/<int:user_id>', methods=['GET'])
+    @login_required
     def get_onlinetime_byid(user_id):
         """
         Get online time by user ID
@@ -428,6 +563,7 @@ def init_routes(app):
         return get_onlinetime_by_id(user_id)
     
     @app.route('/onlinetime/start/<int:user_id>', methods=['POST'])
+    @login_required
     def create_onlinetime_route(user_id):
         """
         Start a new Session
@@ -469,6 +605,7 @@ def init_routes(app):
         return create_onlinetime(user_id)
     
     @app.route('/onlinetime/stop/<int:user_id>', methods=['POST'])
+    @login_required
     def stop_onlinetime_route(user_id):
         """
         Stop an existing Session
@@ -510,6 +647,8 @@ def init_routes(app):
         return stop_onlinetime(user_id)
     
     @app.route('/onlinetime/edit/<int:user_id>/<string:session_time_identifier>', methods=['PUT'])
+    @login_required
+    @role_required('admin')
     def edit_onlinetime_route(user_id, session_time_identifier):
         """
         Edit a previous Session
@@ -553,6 +692,8 @@ def init_routes(app):
         return update_onlinetime(user_id, session_time_identifier, data)
       
     @app.route('/onlinetime/<int:user_id>/<string:session_time_identifier>', methods=['DELETE'])
+    @login_required
+    @role_required('admin')
     def delete_onlineTime_byid(user_id, session_time_identifier):
         """
         Delete onlinetime by User_ID & End time of session
@@ -599,7 +740,9 @@ def init_routes(app):
         return delete_onlineTime_by_id(user_id, session_time_identifier)
   
   # Routing for /totaltime
-    @app.route('/totaltime', methods=['GET'])
+    @app.route('/alltotaltime', methods=['GET'])
+    @login_required
+    @role_required('admin')
     def get_totaltime():
         """
         Get all Totaltime
@@ -643,19 +786,14 @@ def init_routes(app):
         """
         return get_all_totaltime()
     
-    @app.route('/totaltime/<int:user_id>', methods=['GET'])
-    def get_totaltime_byid(user_id):
+    @app.route('/totaltime', methods=['GET'])
+    @login_required
+    def get_totaltime_byid():
         """
-        Get total time by user ID
+        Get total time for the logged-in user
         ---
         tags:
           - Totaltime
-        parameters:
-          - name: user_id
-            in: path
-            required: true
-            type: integer
-            description: The ID of the user
         responses:
           200:
             description: Successful operation
@@ -684,4 +822,5 @@ def init_routes(app):
           404:
             description: User not found
         """
+        user_id = current_user.id  # Get the ID of the logged-in user
         return get_totaltime_by_id(user_id)

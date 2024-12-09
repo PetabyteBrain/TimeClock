@@ -3,3 +3,7 @@ python-dotenv
 Flask
 Flask-Cors
 flasgger
+flask_login
+bcrypt
+flask_wtf
+email-validator

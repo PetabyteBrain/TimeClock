@@ -101,7 +101,30 @@ async function createUser() {
 
 
 /* Totaltime Requests */
-
+async function fetchTotalTime() {
+    try {
+        const response = await fetch(`/totaltime`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        document.getElementById('result6').innerText = JSON.stringify(data);
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
+}
+async function fetchAllTotalTime() {
+    try {
+        const response = await fetch(`/alltotaltime`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        document.getElementById('result7').innerText = JSON.stringify(data);
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
+}
 
 
 fetchIpAddress();

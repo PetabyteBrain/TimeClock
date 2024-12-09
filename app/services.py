@@ -19,13 +19,16 @@ def get_all_users():
         with cnx.cursor() as cursor:
             cursor.execute("SELECT id, firstName, lastName, tagNum, email FROM user;")
             rows = cursor.fetchall()
-            users = [{'id': row[0], 
-                      'firstName': row[1], 
-                      'lastName': row[2], 
-                      'tagNum': row[3], 
-                      'email': row[4]
-                      } for row in rows]
-            return jsonify(users), 200
+            if rows:
+                users = [{'id': row[0], 
+                          'firstName': row[1], 
+                          'lastName': row[2], 
+                          'tagNum': row[3], 
+                          'email': row[4]
+                          } for row in rows]
+                return jsonify(users), 200
+            else:
+                return jsonify({"message": "No Users found"}), 404
     else:
         return jsonify({"message": "Database connection failed"}), 500
 

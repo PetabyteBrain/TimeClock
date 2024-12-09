@@ -30,4 +30,7 @@ class Config:
     MYSQL_DATABASE_PORT = os.getenv('MYSQL_DATABASE_PORT')
     MYSQL_DATABASE_DBNAME = os.getenv('MYSQL_DATABASE_DBNAME')
 
+    #Secret Key for App
+    SECRET_KEY = os.urandom(24)
+
     # Additional configuration settings can be added here
