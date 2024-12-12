@@ -39,6 +39,17 @@ def role_required(role):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
+            if(current_user.role == 1):
+                current_user.role = "dev"
+            elif(current_user.role == 2):
+                current_user.role = "admin"
+            elif(current_user.role == 3):
+                current_user.role = "supervisor"
+            elif(current_user.role == 4):
+                current_user.role = "user"
+            elif(current_user.role == 4):
+                current_user.role = "guest"
+            print(current_user.role)
             if not current_user.is_authenticated or current_user.role != role:
                 abort(403)  # Forbidden
             return func(*args, **kwargs)

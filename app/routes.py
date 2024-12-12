@@ -42,6 +42,19 @@ def init_routes(app):
         )
 
     # Routing for Authentication ------------------------------------------------------------------
+    @app.route('/home', methods=['GET'])
+    def home():
+        """
+        Home page
+        ---
+        tags:
+          - Navigation
+        responses:
+          200:
+            description: The home page
+        """
+        return render_template('home.html')
+
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         """
@@ -154,7 +167,7 @@ def init_routes(app):
         return {'current_user': current_user}
 
     # Routing for /user -----------------------------------------------------------------------------
-    @app.route('/users', methods=['GET'])
+    @app.route('/users/all', methods=['GET'])
     @login_required
     @role_required('admin')
     def get_users():
@@ -195,9 +208,9 @@ def init_routes(app):
         """
         return get_all_users()
 
-    @app.route('/users/<int:user_id>', methods=['GET'])
+    @app.route('/users', methods=['GET'])
     @login_required
-    def get_user_byid(user_id):
+    def get_user_byid():
         """
         Get user by ID
         ---
@@ -237,6 +250,7 @@ def init_routes(app):
           404:
             description: User not found
         """
+        user_id = current_user.id  # Get the ID of the logged-in user
         return get_user_by_id(user_id)
 
     @app.route('/users/<string:user_name>', methods=['GET'])
@@ -346,9 +360,9 @@ def init_routes(app):
         """
         return create_user()
 
-    @app.route('/users/<int:user_id>', methods=['PUT'])
+    @app.route('/users', methods=['PUT'])
     @login_required
-    def edit_user_route(user_id):
+    def edit_user_route():
         """
         Edit an existing user
         ---
@@ -385,6 +399,7 @@ def init_routes(app):
           500:
             description: Database connection failed
         """
+        user_id = current_user.id  # Get the ID of the logged-in user
         data = request.get_json()
         return update_user(user_id, data)
     
@@ -520,7 +535,7 @@ def init_routes(app):
     
     @app.route('/onlinetime/<int:user_id>', methods=['GET'])
     @login_required
-    def get_onlinetime_byid(user_id):
+    def get_onlinetime_byid():
         """
         Get online time by user ID
         ---
@@ -560,11 +575,12 @@ def init_routes(app):
           404:
             description: User not found
         """
+        user_id = current_user.id  # Get the ID of the logged-in user
         return get_onlinetime_by_id(user_id)
     
-    @app.route('/onlinetime/start/<int:user_id>', methods=['POST'])
+    @app.route('/onlinetime/start', methods=['POST'])
     @login_required
-    def create_onlinetime_route(user_id):
+    def create_onlinetime_route():
         """
         Start a new Session
         ---
@@ -602,11 +618,12 @@ def init_routes(app):
           500:
             description: Database connection failed
         """
+        user_id = current_user.id  # Get the ID of the logged-in user
         return create_onlinetime(user_id)
     
-    @app.route('/onlinetime/stop/<int:user_id>', methods=['POST'])
+    @app.route('/onlinetime/stop', methods=['POST'])
     @login_required
-    def stop_onlinetime_route(user_id):
+    def stop_onlinetime_route():
         """
         Stop an existing Session
         ---
@@ -644,6 +661,7 @@ def init_routes(app):
           500:
             description: Database connection failed
         """
+        user_id = current_user.id  # Get the ID of the logged-in user
         return stop_onlinetime(user_id)
     
     @app.route('/onlinetime/edit/<int:user_id>/<string:session_time_identifier>', methods=['PUT'])
@@ -740,7 +758,7 @@ def init_routes(app):
         return delete_onlineTime_by_id(user_id, session_time_identifier)
   
   # Routing for /totaltime
-    @app.route('/alltotaltime', methods=['GET'])
+    @app.route('/totaltime/all', methods=['GET'])
     @login_required
     @role_required('admin')
     def get_totaltime():

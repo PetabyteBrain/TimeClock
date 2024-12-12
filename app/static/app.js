@@ -115,7 +115,7 @@ async function fetchTotalTime() {
 }
 async function fetchAllTotalTime() {
     try {
-        const response = await fetch(`/alltotaltime`);
+        const response = await fetch(`/totaltime/all`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
