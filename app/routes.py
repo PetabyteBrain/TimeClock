@@ -25,12 +25,6 @@ def init_routes(app):
     @app.route('/')
     def index():
         return render_template('home.html')
-    
-    @csrf.exempt
-    @app.route('/api/ip', methods=['GET'])
-    def get_ip():
-        ip_address = request.remote_addr
-        return jsonify({'ip_address': ip_address})
 
     @csrf.exempt
     @app.route('/favicon.ico')
@@ -113,7 +107,7 @@ def init_routes(app):
         """
         return render_template('dashboard.html', user=current_user)
     
-    @app.route('/admin')
+    @app.route('/admin', methods=['GET', 'POST'])
     @login_required
     @role_required('admin')
     def admin_dashboard():
@@ -128,7 +122,7 @@ def init_routes(app):
           403:
             description: Access forbidden - Admin role required
         """
-        return auth_admin_dashboard()
+        return render_template('adminDashboard.html', user=current_user)
     
     @csrf.exempt
     @app.route('/logout', methods=['POST'])
@@ -159,7 +153,22 @@ def init_routes(app):
           403:
             description: Access forbidden - User lacks required permissions
         """
-        return 'Access forbidden: You do not have the necessary permissions.', 403
+        return """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <title>Access Forbidden</title>
+            <script>
+                alert('Access forbidden: You do not have the necessary permissions.');
+                window.history.back(); // Redirect the user back to the previous page
+            </script>
+        </head>
+        <body>
+            <h1>Access Forbidden</h1>
+            <p>You do not have the necessary permissions to view this page.</p>
+        </body>
+        </html>
+        """, 403
 
     # Inject current_user into templates
     @app.context_processor
@@ -369,11 +378,6 @@ def init_routes(app):
         tags:
           - Users
         parameters:
-          - name: user_id
-            in: path
-            required: true
-            type: integer
-            description: The ID of the user to edit
           - name: body
             in: body
             required: true
@@ -489,7 +493,7 @@ def init_routes(app):
     
 
     # Routing for /onlinetime
-    @app.route('/onlinetime', methods=['GET'])
+    @app.route('/onlinetime/all', methods=['GET'])
     @login_required
     @role_required('admin')
     def get_onlinetime():
@@ -533,7 +537,7 @@ def init_routes(app):
         """
         return get_all_onlinetime()
     
-    @app.route('/onlinetime/<int:user_id>', methods=['GET'])
+    @app.route('/onlinetime', methods=['GET'])
     @login_required
     def get_onlinetime_byid():
         """
@@ -669,42 +673,42 @@ def init_routes(app):
     @role_required('admin')
     def edit_onlinetime_route(user_id, session_time_identifier):
         """
-        Edit a previous Session
-        ---
+        Edit an existing session
+        --- 
         tags:
-          - Onlinetime
+            - Onlinetime
         parameters:
-          - name: user_id
-            in: path
-            required: true
-            type: integer
-            description: The ID of the user to edit
-          - name: session_time_identifier
-            in: path
-            required: true
-            type: string
-            description: the End time of the Session
-          - name: body
-            in: body
-            required: true
-            schema:
-              type: object
-              properties:
-                dateTimeStart:
-                  type: string
-                  example: "2024-11-01 08:00:00"
-                dateTimeStop:
-                  type: string
-                  example: "2024-11-01 17:00:00"
+            - name: user_id
+              in: path
+              required: true
+              type: integer
+              description: The ID of the user to edit
+            - name: session_time_identifier
+              in: path
+              required: true
+              type: string
+              description: The identifier for the session (typically end time)
+            - name: body
+              in: body
+              required: true
+              schema:
+                  type: object
+                  properties:
+                      dateTimeStart:
+                          type: string
+                          example: "2024-11-01 08:00:00"
+                      dateTimeStop:
+                          type: string
+                          example: "2024-11-01 17:00:00"
         responses:
-          200:
-            description: Session updated successfully
-          400:
-            description: Invalid input
-          404:
-            description: Session not found
-          500:
-            description: Database connection failed
+            200:
+                description: Session updated successfully
+            400:
+                description: Invalid input
+            404:
+                description: Session not found
+            500:
+                description: Database connection failed
         """
         data = request.get_json()
         return update_onlinetime(user_id, session_time_identifier, data)

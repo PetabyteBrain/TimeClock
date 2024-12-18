@@ -5,27 +5,49 @@
     <script src="../static/app.js"></script>
 </head>
 <body>
-    <h1>Welcome to the Dashboard, {{ user.name }}!</h1>
+    <h1>Welcome to the Dashboard, {{ user.firstName }} {{ user.lastName }}!</h1>
     <p>Your role is: {{ user.role }}</p>
     
     <br>
+
+    <!-- Go to Admin Dashboard -->
+    <form method="POST" action="{{ url_for('admin_dashboard') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit">admin view</button>
+    </form>
+
     <!-- Add your dashboard content here -->
     <div>
         <div>
+            <h3>TotalTime Requests</h3>
             <Label>Get TotalTime</Label>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" onclick="fetchTotalTime()">TotalTime</button>
             <pre id="result6">test</pre>
         </div>
         <div>
-            <Label>Get all TotalTime</Label>
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" onclick="fetchAllTotalTime()">TotalTime</button>
-            <pre id="result7">test</pre>
+            <h3>OnlineTime Requests</h3>
+            <div>
+                <Label>Get OnlineTime</Label>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" onclick="fetchOnlineTime()">OnlineTime</button>
+                <pre id="result7">test</pre>
+            </div>
+            <div>
+                <Label>Start Session</Label>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" onclick="startSession()">Start</button>
+            </div>
+            <div>
+                <Label>Stop Session</Label>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" onclick="stopSession()">Stop</button>
+            </div>
         </div>
     </div>
 
     <!-- Logout Form -->
+    <br>
     <form method="POST" action="{{ url_for('logout') }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button type="submit">Logout</button>

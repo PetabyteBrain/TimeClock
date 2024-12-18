@@ -22,9 +22,10 @@ def is_valid_email(email):
     pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return re.match(pattern, email) is not None
 
-def is_valid_datetime(value):
+def is_valid_datetime(dt_str):
     try:
-        datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+        # Try to parse the string to a datetime object
+        datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
         return True
     except ValueError:
         return False

@@ -31,6 +31,7 @@ login_manager.login_view = "login"
 
 # Initialize extensions
 CORS(app)
+CORS(app, supports_credentials=True)
 swagger = Swagger(app, 
                   template={
                       "swagger": "2.0",

@@ -136,12 +136,6 @@ def auth_register():
 
     return render_template('register.html', form=form)
 
-def auth_dashboard():
-    return f'Hello, {current_user.firstName}! Role: {current_user.role}'
-
-def auth_admin_dashboard():
-    return 'Welcome to the Admin Dashboard!'
-
 def auth_logout():
     logout_user()
     return redirect(url_for('login'))

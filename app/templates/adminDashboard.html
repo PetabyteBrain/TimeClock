@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin view</title>
+    <script src="../static/app.js"></script>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+    <h1>Welcome to the Admin Dashboard, {{ user.firstName }} {{ user.lastName }}!</h1>
+    <p>Your role is: {{ user.role }}</p>
+
+    <br>
+    <div>
+        <div>
+            <Label>Get all TotalTime</Label>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" onclick="fetchAllTotalTime()">TotalTime</button>
+            <pre id="result7">test</pre>
+        </div>
+        <div>
+            <Label>Get all OnlineTime</Label>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" onclick="fetchALLOnlineTime()">OnlineTime</button>
+            <pre id="result6">test</pre>
+        </div>
+        <div>
+            <div>
+                <h3>Edit OnlineTime</h3>
+
+                <!-- CSRF Token -->
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <!-- User ID -->
+                <Label for="user_id">User ID</Label>
+                <input type="text" id="user_id" name="user_id" required><br><br>
+
+                <!-- Session Time Identifier -->
+                <Label for="session_time_identifier">Session Time Identifier (End Time)</Label>
+                <input type="text" id="session_time_identifier" name="session_time_identifier" placeholder="YYYY-MM-DD HH:MM:SS" required><br><br>
+
+                <!-- Start Time -->
+                <Label for="dateTimeStart">Start Time</Label>
+                <input type="text" id="dateTimeStart" name="dateTimeStart" placeholder="YYYY-MM-DD HH:MM:SS" required><br><br>
+
+                <!-- End Time -->
+                <Label for="dateTimeStop">End Time</Label>
+                <input type="text" id="dateTimeStop" name="dateTimeStop" placeholder="YYYY-MM-DD HH:MM:SS" required><br><br>
+
+                <!-- Submit Button -->
+                <button type="button" onclick="editOnlineTime()">Update Session</button>
+
+                <!-- Result Display -->
+                <pre id="result8">test</pre>
+            </div>
+            
+
+            <div id="delete-onlinetime-section">
+                <h3>Delete OnlineTime</h3>
+            
+                <!-- CSRF Token -->
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            
+                <!-- User ID -->
+                <label for="user_delete_id">User ID</label>
+                <input type="text" id="user_delete_id" name="user_delete_id" required><br><br>
+                            
+                <!-- Session Time Identifier -->
+                <label for="session_time_identifier1">Session Time Identifier (End Time)</label>
+                <input type="text" id="session_time_identifier1" name="session_time_identifier" placeholder="YYYY-MM-DD HH:MM:SS" required><br><br>
+                            
+                <!-- Delete Button -->
+                <button type="button" onclick="deleteOnlineTime()">Delete Session</button>
+                            
+                <!-- Result Display -->
+                <pre id="result4">test</pre>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- Go to User Dashboard -->
+    <br>
+    <a href="{{ url_for('dashboard') }}">Back</a>
+
+</body>
+</html>

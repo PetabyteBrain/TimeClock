@@ -402,86 +402,111 @@ def stop_onlinetime(user_id):
 
 def update_onlinetime(user_id, session_time_identifier, data):
     """
-    Updates user details in the database.
+    Updates online time session in the database.
     :param user_id: The ID of the user to update.
+    :param session_time_identifier: The session end time identifier.
     :param data: JSON data containing the fields to update.
     :return: JSON response and status code.
     """
-    # Initialize a list to hold the fields to update
     updates = []
     params = []
 
+    # Validate session_time_identifier format
+    if not is_valid_datetime(session_time_identifier):
+        return jsonify({"message": "Invalid session_time_identifier format. Expected YYYY-MM-DD HH:MM:SS."}), 400
+
     # Check each field and add to updates if it's provided
     if 'dateTimeStart' in data and data['dateTimeStart']:
+        if not is_valid_datetime(data['dateTimeStart']):
+            return jsonify({"message": "Invalid dateTimeStart format. Expected YYYY-MM-DD HH:MM:SS."}), 400
         updates.append("dateTimeStart = %s")
         params.append(data['dateTimeStart'])
+
     if 'dateTimeStop' in data and data['dateTimeStop']:
+        if not is_valid_datetime(data['dateTimeStop']):
+            return jsonify({"message": "Invalid dateTimeStop format. Expected YYYY-MM-DD HH:MM:SS."}), 400
         updates.append("dateTimeStop = %s")
         params.append(data['dateTimeStop'])
 
     # If no fields are provided, return a 400 error
     if not updates:
-        abort(400, description="No fields to update")
+        return jsonify({"message": "No fields to update"}), 400
 
-    # Add the user_id to the parameters (last parameter)
+    # Add the user_id and session_time_identifier as the last parameters
     params.append(user_id)
     params.append(session_time_identifier)
 
-    # Construct the SQL query with the updates
-    sql_query = f"UPDATE onlinetime SET {', '.join(updates)} WHERE id = %s AND dateTimeStop = %s"
+    # Construct the SQL query
+    set_clause = ", ".join(updates)
+    sql_query = f"UPDATE onlinetime SET {set_clause} WHERE user_id = %s AND dateTimeStop = %s"
 
     cnx = get_db_connection()
-    if not is_valid_datetime(session_time_identifier):
-                return jsonify({"message": "Invalid session_time_identifier format"}), 400
     if cnx:
         try:
             with cnx.cursor() as cursor:
-                # Execute the update query
-                cursor.execute(sql_query, params)
+                cursor.execute(sql_query, params)  # Execute the query
                 cnx.commit()  # Commit the transaction
 
-                # Check if the user was updated
                 if cursor.rowcount > 0:
-                    update_total_time(user_id)
-                    return jsonify({"message": "User updated successfully"}), 200
+                    update_total_time(user_id)  # Update total time after editing session
+                    return jsonify({"message": "Session updated successfully"}), 200
                 else:
-                    abort(404, description="User not found")  # Return 404 if no user found
+                    return jsonify({"message": "Session not found or no changes made"}), 404
         except Exception as e:
-            # Log the error (you might consider adding proper logging)
-            abort(500, description=f"Database error: {str(e)}")  # Return 500 if an error occurs
+            print(f"Database error: {str(e)}")
+            return jsonify({"message": f"Database error: {str(e)}"}), 500
         finally:
-            cnx.close()  # Ensure the connection is closed
+            cnx.close()
     else:
-        return abort(500, description="Database connection failed")  # Return 500 if connection fails
+        return jsonify({"message": "Database connection failed"}), 500
+
+
+
 
 def delete_onlineTime_by_id(user_id, session_time_identifier):
-    cnx = get_db_connection()
+    """
+    Deletes an online time session from the database.
+    :param user_id: The ID of the user.
+    :param session_time_identifier: The session end time identifier.
+    :return: JSON response and status code.
+    """
+    # Validate session_time_identifier format
     if not is_valid_datetime(session_time_identifier):
-                return jsonify({"message": "Invalid session_time_identifier format"}), 400
+        return jsonify({"message": "Invalid session_time_identifier format. Expected YYYY-MM-DD HH:MM:SS."}), 400
+
+    cnx = get_db_connection()
     if cnx:
         try:
             with cnx.cursor() as cursor:
-                # Check if the user exists
-                cursor.execute("Select * from OnlineTime WHERE user_id = %s AND dateTimeStop is not NULL AND dateTimeStop = %s;", (user_id, session_time_identifier))
-                row = cursor.fetchall()
-                
+                # Check if the session exists
+                cursor.execute(
+                    "SELECT * FROM OnlineTime WHERE user_id = %s AND dateTimeStop = %s;",
+                    (user_id, session_time_identifier)
+                )
+                row = cursor.fetchone()
+
                 if not row:
                     return jsonify({"message": "Session not found"}), 404
 
-                # If user exists, delete them
-                else:
-                    cursor.execute("DELETE FROM OnlineTime WHERE user_id = %s AND dateTimeStop is not NULL AND dateTimeStop = %s;", (user_id, session_time_identifier))
-                    cnx.commit()  # Commit the transaction after the deletion
+                # Delete the session
+                cursor.execute(
+                    "DELETE FROM OnlineTime WHERE user_id = %s AND dateTimeStop = %s;",
+                    (user_id, session_time_identifier)
+                )
+                cnx.commit()  # Commit the transaction
 
-                    update_total_time(user_id)
-                    return jsonify({"message": f"Session from User with id {user_id} was deleted successfully"}), 200
+                # Update the total time for the user
+                update_total_time(user_id)
+
+                return jsonify({"message": f"Session from User with id {user_id} was deleted successfully"}), 200
         except Exception as e:
             print(f"Error: {e}")  # Log the error
-            return jsonify({"message": "An internal error occurred"}), 500
+            return jsonify({"message": f"An internal error occurred: {str(e)}"}), 500
         finally:
             cnx.close()  # Ensure the connection is closed
     else:
         return jsonify({"message": "Database connection failed"}), 500
+
 
 # /totaltime functions
 def get_all_totaltime():
